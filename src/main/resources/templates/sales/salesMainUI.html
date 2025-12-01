@@ -8,6 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        function loadPage(page){
+            loadList(page);
+        }
+    </script>
     <script src="/js/util.js"></script>
 
     <style>
@@ -36,7 +41,7 @@
     </style>
 </head>
 
-<body >
+<body>
 <header th:insert="fragments/toolBarManager :: toolBarManager"></header>
 <div class="p-2 layout-container">
 
@@ -396,7 +401,7 @@
 
         fetchUtil(`/salesList?startDate=${start}&endDate=${end}&storeName=${storeName}&page=${page}`, data => {
             renderList(data.list);
-            renderPagination(data.totalPages, data.currentPage);
+            updatePaginationUI(data.currentPage, data.totalPages);
         });
     }
 
@@ -431,33 +436,9 @@
         });
     }
 
-    function renderPagination(totalPages, currentPage){
-        const $pag = $("#pagination");
-        $pag.empty();
-
-        $pag.append(`
-            <li class="page-item ${currentPage===1?"disabled":""}">
-                <a class="page-link" href="#" onclick="loadList(${currentPage-1}); return false;">&lt;</a>
-            </li>
-        `);
-
-        for(let i=1;i<=totalPages;i++){
-            $pag.append(`
-                <li class="page-item ${currentPage===i?"active":""}">
-                    <a class="page-link" href="#" onclick="loadList(${i}); return false;">${i}</a>
-                </li>
-            `);
-        }
-
-        $pag.append(`
-            <li class="page-item ${currentPage===totalPages?"disabled":""}">
-                <a class="page-link" href="#" onclick="loadList(${currentPage+1}); return false;">&gt;</a>
-            </li>
-        `);
-    }
 
     $("#list-searchBtn").on("click", () => loadList(1));
-
+    $("#list-storeName").on("keyup", e => e.key === "Enter" && loadList(1));
     $(document).on("click", ".detailBtn", function(){
         const storeNo = $(this).data("store-no");
         const date    = $(this).data("sales-date");
