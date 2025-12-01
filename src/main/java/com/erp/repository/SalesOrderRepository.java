@@ -28,41 +28,41 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long>, J
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
-
-    @Query("""
-           SELECT COUNT(o)
-           FROM SalesOrder o
-           WHERE o.store.storeNo = :storeNo
-             AND DATE(o.salesOrderDatetime) = :salesOrderDate
-           """)
-    int countOrders(@Param("storeNo") Long storeNo, @Param("salesOrderDate") Date salesOrderDate );
-
-
-    @Query("""
-            SELECT o
-            FROM SalesOrder o
-            WHERE DATE(o.salesOrderDatetime) = :salesOrderDate
-""")
-    List<SalesOrder> getSalesOrderbyDate(@Param("salesOrderDate") LocalDate salesOrderDate);
-
-    @Query("""
-            SELECT o
-            FROM SalesOrder o
-            where o.store.storeNo = :storeNo
-""")
-    List<SalesOrder> getSalesOrdersByStore(@Param("storeNo") Long storeNo);
-
-
-    @Query("""
-            select o
-            from SalesOrder o
-            where o.store.storeNo = :storeNo
-              and DATE(o.salesOrderDatetime) = :salesOrderDate
-""")
-    List<SalesOrder> getSalesOrderByStoreAndDate(@Param("storeNo") Long storeNo,
-                                                 @Param("salesOrderDate") LocalDate salesOrderDate);
-
-
+//
+//    @Query("""
+//           SELECT COUNT(o)
+//           FROM SalesOrder o
+//           WHERE o.store.storeNo = :storeNo
+//             AND DATE(o.salesOrderDatetime) = :salesOrderDate
+//           """)
+//    int countOrders(@Param("storeNo") Long storeNo, @Param("salesOrderDate") Date salesOrderDate );
+//
+//
+//    @Query("""
+//            SELECT o
+//            FROM SalesOrder o
+//            WHERE DATE(o.salesOrderDatetime) = :salesOrderDate
+//""")
+//    List<SalesOrder> getSalesOrderbyDate(@Param("salesOrderDate") LocalDate salesOrderDate);
+//
+//    @Query("""
+//            SELECT o
+//            FROM SalesOrder o
+//            where o.store.storeNo = :storeNo
+//""")
+//    List<SalesOrder> getSalesOrdersByStore(@Param("storeNo") Long storeNo);
+//
+//
+//    @Query("""
+//            select o
+//            from SalesOrder o
+//            where o.store.storeNo = :storeNo
+//              and DATE(o.salesOrderDatetime) = :salesOrderDate
+//""")
+//    List<SalesOrder> getSalesOrderByStoreAndDate(@Param("storeNo") Long storeNo,
+//                                                 @Param("salesOrderDate") LocalDate salesOrderDate);
+//
+//
     @Query("""
     SELECT SUM(sod.menuCount)
     FROM StoreOrderDetail sod
