@@ -263,7 +263,6 @@
     // 제안 확인 이벤트
     itemProposal.on("click", ".approve_btn", function (){
         const oldRow = $(this).closest("tr");
-        const newRow = $("<tr>");
         const itemName = oldRow.find("td").eq(1).text();
 
         if (hasDuplicate(itemName)) {
@@ -279,6 +278,7 @@
             return $(this).find("td").eq(1).text().trim() === itemName;
         });
 
+        const newRow = $("<tr>").data("itemno", itemRow.data("itemno"));
         $("<td>").text(itemName).appendTo(newRow); // 품목 명
 
         $("<td>").text(itemRow.find("td").eq(5).text()).appendTo(newRow); // 공급 단위

@@ -191,6 +191,23 @@ public class ItemOrderService {
         });
     }
 
+    // 발주 제안
+    public void proposeItemOrder(ProposalItemOrderDTO request) {
+
+        request.getProposalList().forEach((proposalItem)->{
+            ItemProposal proposal = ItemProposal.builder()
+                    .managerId(Manager.builder().managerId(request.getManagerId()).build()) // 관리자id
+                    .storeNo(Store.builder().storeNo(request.getStoreNo()).build()) // 매장id
+                    .itemNo(Item.builder().itemNo(proposalItem.getItemNo()).build()) // 품목id
+                    .proposalQuantity(proposalItem.getItemQuantity()) // 수량
+                    .proposalReason(proposalItem.getProposalReason()) // 사유
+                    .proposalDate(new Timestamp(System.currentTimeMillis()))
+                    .build();
+            proposalRepo.save(proposal);
+        });
+
+    }
+
     public void approveItemOrder(Long itemOrderNo, String managerId) {
         // 대기 중 발주 선택
         ItemOrder itemOrder = repoOrder.findById(itemOrderNo).orElseThrow(() -> new ItemOrderNotFoundException(itemOrderNo) );

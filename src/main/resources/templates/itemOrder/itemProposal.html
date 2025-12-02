@@ -126,10 +126,9 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-semibold">발주 추천 목록</h5>
                 <div>
-                    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposalModal">
+                    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposalModal" id="item_proposal_history">
                         제안 내역
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm">직영점 발주 내역</button>
                 </div>
             </div>
             <div class="scroll-area">
@@ -145,14 +144,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>페페로니 1kg</td>
-                            <td><span>ea (1000g)</span></td>
-                            <td><input type="number" class="form-control form-control-sm me-2 quantity-box" value="1"></td>
-                            <td data-price="14900">14,900원</td>
-                            <td><input type="text" class="form-control form-control-sm"></td>
-                            <td class="text-center"><button class="btn btn-outline-secondary btn-sm remove-btn">삭제</button></td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -160,7 +151,7 @@
             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
                 <div>총 품목수: <strong><span id="total-cnt"></span><label>개</label></strong></div>
                 <div>총 발주액: <strong><span id="total-price"></span><label>원</label></strong></div>
-                <button class="btn btn-warning">발주 제안</button>
+                <button class="btn btn-warning" id="proposal-btn">발주 제안</button>
             </div>
         </div>
     </div>
@@ -218,7 +209,7 @@
 
             <div class="modal-body">
 
-                <table class="table table-bordered table-hover align-middle">
+                <table class="table table-bordered table-hover align-middle" id="proposal_history_table">
                     <thead>
                     <tr>
                         <th>제안 일자</th>
@@ -231,60 +222,6 @@
                     </thead>
 
                     <tbody>
-                    <tr>
-                        <td>2025.09.19</td>
-                        <td class="fw-bold">페퍼로니 1kg</td>
-                        <td>2 ea</td>
-                        <td>-</td>
-                        <td>홍길동</td>
-                        <td class="text-danger fw-bold">미응답</td>
-                    </tr>
-
-                    <tr>
-                        <td>2025.09.18</td>
-                        <td class="fw-bold">페퍼로니 1kg</td>
-                        <td>1 ea</td>
-                        <td>신제품 출시 일정 테스트 필요</td>
-                        <td>홍길동</td>
-                        <td class="text-danger fw-bold">미응답</td>
-                    </tr>
-
-                    <tr>
-                        <td>2025.09.03</td>
-                        <td class="fw-bold">고구마 10kg 박스</td>
-                        <td>1 ea</td>
-                        <td>-</td>
-                        <td>홍길동</td>
-                        <td class="text-danger fw-bold">미응답</td>
-                    </tr>
-
-                    <tr>
-                        <td>2025.09.03</td>
-                        <td class="fw-bold">계란 30구</td>
-                        <td>3 tray</td>
-                        <td>-</td>
-                        <td>홍길동</td>
-                        <td class="text-danger fw-bold">미응답</td>
-                    </tr>
-
-                    <tr>
-                        <td>2025.08.29</td>
-                        <td class="fw-bold">양파 10kg 자루</td>
-                        <td>1 bag</td>
-                        <td>-</td>
-                        <td>이순신</td>
-                        <td class="text-success fw-bold">응답완료</td>
-                    </tr>
-
-                    <tr>
-                        <td>2025.08.27</td>
-                        <td class="fw-bold">계란 30구</td>
-                        <td>2 tray</td>
-                        <td>-</td>
-                        <td>이순신</td>
-                        <td class="text-success fw-bold">응답완료</td>
-                    </tr>
-
                     </tbody>
                 </table>
 
@@ -311,7 +248,7 @@
         const tr = $(this).closest("tr");
         const name = tr.find("td").eq(0).text().trim();
         // 품목 정보 획득
-        const itemRow = $("#item-toOrder tbody tr").filter(function(){
+        const itemRow = $("#item_toOrder tbody tr").filter(function(){
             return $(this).find("td").eq(1).text().trim() === name;
         });
 
@@ -334,7 +271,7 @@
     });
 
     // 담기 버튼 이벤트
-    $(document).on("click", "#itemToOrder .add-btn", function(){
+    $(document).on("click", "#item_toOrder .add_btn", function(){
         const itemRow = $(this).closest("tr");
         const itemName = itemRow.find("td").eq(1).text();
 
@@ -343,7 +280,7 @@
             return;
         }
 
-        const newRow = $("<tr>");
+        const newRow = $("<tr>").data("itemno", itemRow.data("itemno"));
         $("<td>").text(itemName).appendTo(newRow); // 품목 명
         $("<td>").text(itemRow.find("td").eq(5).text()).appendTo(newRow); // 공급 단위
 
@@ -393,6 +330,7 @@
             .data("price", total);
 
         totalCnt.text($(target).children().length); // 총 품목 수
+        totalCnt.data("cnt", $(target).children().length); // 총 품목 수
     }
 
     // 선택한 품목 최종 결산
@@ -412,8 +350,6 @@
     });
 
 
-    // 직영점 번호
-    let storeNo = "0";
     // 품목 현황 영역의 이벤트 등록
     const itemToOrder = $("#item_toOrder");
 
@@ -452,19 +388,21 @@
         }).length > 0;
     }
 
+    // 직영점 번호
+    let currentStoreNo = "0";
     const storeInput = $("#storeSearchInput");
     $(document).on("click", "#storeSearchInput", function(){
         StoreSearchModal.open("", function(storeNo, storeName){
             storeInput.val(storeName);
             storeInput.data("storeno", storeNo);
-            storeNo = $("#storeSearchInput").data("storeno");
+            currentStoreNo = $("#storeSearchInput").data("storeno");
 
             fetchUtil(`/itemOrder/itemList/${storeNo}`, (data)=>{
                 load_itemList(data);
             });
         });
     });
-calcTotal();
+    calcTotal();
 
 
     function load_itemList(data){
@@ -487,11 +425,61 @@ calcTotal();
             tbody.append(row);
         });
     }
+    function load_proposal_history(data){
+        const tbody = $("#proposal_history_table tbody");
+        tbody.empty();
 
-    $(window).on("load", function(){
-        fetchUtil(`/itemOrder/itemList/${storeNo}`, (data)=>{
-            load_itemList(data);
+        data.forEach((item) => {
+            const date = new Date(item.proposalDate);
+            let row = `<tr>
+                        <td>${date.getFullYear()+"-"+String(date.getMonth()).padStart(2, "0")+"-"+String(date.getDate()).padStart(2, "0")}</td>
+                        <td class="fw-bold">${item.itemName}</td>
+                        <td>${item.quantity +" "+ item.supplyUnit}</td>
+                        <td>${item.reason == null ? "-" : item.reason}</td>
+                        <td>${item.managerName}</td>`;
+
+            if(item.responseDate == null)
+                row += `<td class="text-danger fw-bold">대기</td>`;
+            else
+                row += `<td class="text-success fw-bold">확인</td>`;
+
+            tbody.append(row+`<tr>`);
         });
+    }
+    $(document).on("click", "#item_proposal_history", function(){
+        fetchUtil(`/itemOrder/itemProposalHistory/${currentStoreNo}`, (data)=>{
+            load_proposal_history(data);
+        });
+    });
+
+    $(document).on("click", "#proposal-btn", function(){
+        let list = {
+            managerId : "galaxy0712",
+            storeNo : 1,
+            totalItem: $("#total-cnt").data("cnt"),
+            totalPrice: $("#total-price").data("price"),
+            proposalList : []
+        };
+
+        itemProposal.find("tbody tr").each(function(){
+            const itemNo = $(this).data("itemno");
+            const itemQuantity = $(this).find("td").eq(2).find("input").val();
+            const itemOrderPrice = $(this).find("td").eq(3).data("price");
+            const proposalReason = $(this).find("input").eq(1).val();
+            list.proposalList.push({
+                itemNo : itemNo,
+                itemQuantity : itemQuantity,
+                itemOrderPrice : itemOrderPrice,
+                proposalReason : proposalReason
+            });
+        });
+
+        fetchUtil(`/itemOrder/propose`, (data)=>{
+            if(data.message === "Propose ItemOrder Success"){
+                alert("성공");
+                itemProposal.find("tbody").empty();
+            }
+        }, "POST", JSON.stringify(list));
     });
 </script>
 </body>

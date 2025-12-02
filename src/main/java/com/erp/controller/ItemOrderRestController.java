@@ -104,6 +104,7 @@ public class ItemOrderRestController {
     @PostMapping("/itemOrder/itemOrder")
     public ResponseEntity<Map<String, String>> requestItemOrder(@RequestBody ItemOrderRequestDTO request) {
         try {
+            System.out.println(request);
             itemOrderService.requestItemOrder(request);
         }
         catch (Exception e) {
@@ -135,5 +136,18 @@ public class ItemOrderRestController {
             return ResponseEntity.status(400).build();
         }
         return ResponseEntity.ok().body(Map.of("message", "Decline ItemOrder Success"));
+    }
+
+
+    @PostMapping("/itemOrder/propose")
+    public ResponseEntity<Map<String, String>> proposalItemOrder(@RequestBody ProposalItemOrderDTO request) {
+        try {
+            itemOrderService.proposeItemOrder(request);
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(400).build();
+        }
+        return ResponseEntity.ok().body(Map.of("message", "Propose ItemOrder Success"));
     }
 }
