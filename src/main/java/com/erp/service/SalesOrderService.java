@@ -1,5 +1,6 @@
 package com.erp.service;
 
+import com.erp.controller.exception.NoIngredientException;
 import com.erp.dto.SalesOrderDTO;
 import com.erp.dto.SalesOrderDetailDTO;
 import com.erp.dto.SalesOrderRequestDTO;
@@ -93,6 +94,11 @@ public class SalesOrderService {
 
                 int previousQty = (latestStock == null) ? 0 : latestStock.getCurrentQuantity();
                 int updatedQty = previousQty - totalQty;
+
+                if (updatedQty < 0 ) {
+                    throw new NoIngredientException("재료 재고 부족으로 주문 불가. 부족 재료: "
+                    + ingredient.getItem().getItemNo());
+                }
 
                 StoreStock newStock = StoreStock.builder()
                         .storeItemNo(storeItem.getStoreItemNo())
