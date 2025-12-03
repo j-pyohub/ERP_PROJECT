@@ -7,28 +7,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/itemOrder")
 public class ItemOrderController {
     private ItemOrderService itemOrderService;
 
-    @GetMapping("/itemOrder/itemOrderList")
+    @GetMapping("/itemOrderList")
     public String itemOrderHistory() {
-        return "/itemOrder/itemOrderHistory";
+        return "itemOrder/itemOrderHistory";
     }
-    @GetMapping("/itemOrder/itemOrder")
+    @GetMapping("/itemOrder")
     public String itemOrder() {
-        return "/itemOrder/itemOrder";
+        return "itemOrder/itemOrder";
     }
-    @GetMapping("/itemOrder/itemPropose")
+    @GetMapping("/itemPropose")
     public String itemProposal() {
         return "itemOrder/itemProposal";
     }
-    @GetMapping("/itemOrder/itemOrderListManager")
+    @GetMapping("/itemOrderListManager")
     public String itemOrderHistoryManager() {
-        return "/itemOrder/itemOrderHistoryManager";
+        return "itemOrder/itemOrderHistoryManager";
     }
 }
