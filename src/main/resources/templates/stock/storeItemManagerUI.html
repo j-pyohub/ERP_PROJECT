@@ -50,7 +50,7 @@
     </style>
 </head>
 <body data-role="MANAGER">
-<header th:replace="fragments/toolBar :: toolBarManager"></header>
+<header th:replace="fragments/toolBar :: toolBar"></header>
 
 <div class="layout-container py-4 px-3">
     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -62,8 +62,16 @@
             <div class="col-auto fw-bold">카테고리</div>
             <div class="col-6 col-md-2">
                 <select id="categorySelect" class="form-select form-select-sm">
-                    <option value="">전체</option><option>도우</option><option>소스</option><option>치즈</option>
-                    <option>토핑</option><option>향신료</option><option>야채</option><option>사이드</option><option>음료</option><option>면</option>
+                    <option value="">전체</option>
+                    <option>도우</option>
+                    <option>치즈</option>
+                    <option>토핑</option>
+                    <option>소스</option>
+                    <option>향신료</option>
+                    <option>야채</option>
+                    <option>면</option>
+                    <option>사이드</option>
+                    <option>음료</option>
                 </select>
             </div>
 

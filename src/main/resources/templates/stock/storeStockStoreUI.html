@@ -24,6 +24,12 @@
         .erp-stock-history table.stock-table tbody tr{ background:#fff !important; }
         .erp-stock-history table.stock-table tbody tr:nth-of-type(odd),
         .erp-stock-history table.stock-table tbody tr:nth-of-type(even){ background:#fff !important; }
+        /* 폐기사유 칸: 한 줄 33자 내외 + 줄바꿈 */
+        .erp-stock-history .reason-cell {
+            max-width: 33ch;       /* 한 줄 약 33글자 폭 */
+            white-space: normal;   /* 일반 줄바꿈 허용 */
+            word-break: break-all; /* 띄어쓰기 없어도 강제 줄바꿈 */
+        }
 
         .erp-stock-history td.text-end.chg-plus{ color:#0d6efd !important; font-weight:700; }
         .erp-stock-history td.text-end.chg-minus{ color:#dc3545 !important; font-weight:700; }
@@ -35,11 +41,11 @@
       data-role="STORE"
       th:attr="data-store-no=${storeNo}, data-store-name=${storeName}">
 
-<header th:replace="fragments/toolBarStore :: toolBarStore"></header>
+<header th:replace="fragments/toolBar :: toolBar"></header>
 
 <div class="layout-container py-4 px-3">
     <div class="mb-3">
-        <h3 class="fw-bold mb-0" th:text="'재고 변동 조회 : ' + ${storeName}">재고 변동 조회 : 가산점</h3>
+        <h3 class="fw-bold mb-0">재고 변동 조회</h3>
     </div>
 
     <!-- 조회영역 (2줄) -->
@@ -62,9 +68,16 @@
             <div class="col-6 col-md-2">
                 <label class="fw-bold small d-block mb-1">카테고리</label>
                 <select id="categorySelect" class="form-select form-select-sm">
-                    <option value="">전체</option><option>도우</option><option>소스</option>
-                    <option>치즈</option><option>육류</option><option>야채</option>
-                    <option>사이드</option><option>음료</option>
+                    <option value="">전체</option>
+                    <option>도우</option>
+                    <option>치즈</option>
+                    <option>토핑</option>
+                    <option>소스</option>
+                    <option>향신료</option>
+                    <option>야채</option>
+                    <option>면</option>
+                    <option>사이드</option>
+                    <option>음료</option>
                 </select>
             </div>
             <div class="col-6 col-md-2">
@@ -108,7 +121,7 @@
                         <th>품목명</th>
                         <th>변동유형</th>
                         <th class="text-end">변동수량</th>
-                        <th class="text-end">현재 재고</th>
+                        <th class="text-end">변동후 재고량</th>
                         <th>폐기사유</th>
                     </tr>
                     </thead>

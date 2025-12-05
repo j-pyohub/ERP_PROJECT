@@ -33,10 +33,11 @@
   <td>${r.changeReason || ''}</td>
   ${qtyHtml}
   <td class="text-end">${Number(r.currentQuantity||0).toLocaleString()} ${unit}</td>
-  <td>${r.disposalReason || '-'}</td>
+  <td class="reason-cell">${r.disposalReason || '-'}</td>
 </tr>`);
         });
     }
+
 
     // 페이저
     function renderPager(resp, onGo) {
@@ -97,7 +98,7 @@
             toggleOverlay();
             return;
         }
-        const base = IS_MANAGER ? '/stock/storeStock/manager/list/' : '/stock/storeStock/store/list/';
+        const base = IS_MANAGER ? '/manager/stock/storeStock/list/' : '/store/stock/storeStock/list/';
         fetch(base + page + '?' + (params ? params.toString() : 'size=10'))
             .then(r => { if(!r.ok) throw new Error('조회 실패'); return r.json(); })
             .then(data => {
