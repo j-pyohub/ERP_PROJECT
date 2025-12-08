@@ -18,6 +18,12 @@ public class ItemOrderProposalRepositoryTest {
     private ItemProposalRepository repo;
 
     @Test
+    void find(){
+        System.out.println(repo.findByStoreNoAndResponseDateNull(Store.builder().storeNo(1L).build()));
+
+    }
+
+    @Test
     public void findAllProposal() {
         repo.findAll().forEach(System.out::println);
     }

@@ -62,7 +62,7 @@ public class SecurityConfig {
                @Override
                public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                   request.getRequestDispatcher("/noPermission").forward(request, response);
+                   request.getRequestDispatcher("/noP ermission").forward(request, response);
                }
            });
         });

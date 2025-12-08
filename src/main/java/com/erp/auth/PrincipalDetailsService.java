@@ -12,7 +12,7 @@
 
     @Service
     @RequiredArgsConstructor
-    public class PrincipalDetailsService implements UserDetailsService {
+    public class    PrincipalDetailsService implements UserDetailsService {
 
         private final ManagerDAO managerDAO;
         private final StoreDAO storeDAO;
