@@ -1,24 +1,22 @@
-🚀 Branch 구조
+ Branch 구조
 
 🔵 main
 
 배포용 브랜치
 
-항상 안정된 코드만 존재
+항상 안정된 코드만 유지
 
 직접 커밋 금지
 
-오직 develop → main merge 만 허용
+오직 develop → main merge만 허용
 
 🟢 develop
 
 기능 통합 브랜치
 
-feature 브랜치에서 개발 완료 후 PR로 merge
+feature / fix / refactor 브랜치에서 완료된 작업이 merge됨
 
-테스트·검증은 develop에서 진행
-
-배포 전 마지막 통합 코드가 존재
+배포 전 최종 통합 코드가 존재
 
 🌿 feature/*
 
@@ -26,22 +24,53 @@ feature 브랜치에서 개발 완료 후 PR로 merge
 
 develop에서 분기
 
-기능 개발에 필요한 모든 코드(UI, Controller, Service, Repository 포함)를 한 세트로 포함
+UI, Controller, Service, Repository, DTO 등
+해당 기능 구현에 필요한 전체 코드 세트 포함
 
-완료 후 develop에 PR
+해당 기능과 관련된 테스트 코드도 feature 브랜치에서 함께 개발
 
-merge 후 브랜치 삭제
+기능 완성 후 develop에 PR
 
-🧪 Branch Workflow
-feature/*  →  develop  →  main
+merge 후 feature 브랜치 삭제
+
+🛠 fix/*
+
+버그 수정 브랜치
+
+develop에서 분기
+
+오류·예외 상황·로직 문제 해결 시 사용
+
+완료 후 develop에 merge 및 브랜치 삭제
+
+🔁 refactor/*
+
+리팩토링 전용 브랜치
+
+기능 변경 없이 코드 구조 개선, 성능 향상, 공통화 등
+
+완료 후 develop에 merge
+
+📝 docs/*
+
+문서 작업 브랜치
+
+README, API 명세, ERD 변경 등 문서만 수정할 때 사용
+
+develop에 merge 후 삭제
 
 
-기능 개발 → 통합 → 배포 순서로 단순하고 명확합니다.
+🧩 Branch Workflow
+
+feature/*   ┐
+fix/*       ├──→ develop → main(배포)
+refactor/*  ┘
 
 
-📝  Commit Convention
+기능 개발 → develop 통합 → main 배포 흐름이 명확합니다.
 
-커밋 메시지는 아래 형식으로 작성합니다.
+
+📝 Commit Convention
 
 ✔ 형식
 type: description
@@ -50,32 +79,17 @@ type: description
 
 명령형(add, fix, update…)
 
-| 타입     | 코드     | 설명                          | 예시                              |
-|----------|----------|-----------------------------|-----------------------------------|
-| feat     | 기능 추가 | 새로운 기능, API, 화면 추가          | add login screen                  |
-| fix      | 버그 수정 | 오류 해결, 잘못된 로직 수정            | fix sales detail                  |
-| style    | UI/스타일 | CSS, 레이아웃, 포맷 변경 (기능 변화 없음) | style item table layout           |
-| refactor | 리팩터링  | 코드 구조 개선, 공통화 (기능 변화 없음)    | refactor stock filtering logic    |
-| docs     | 문서      | README, 문서, ERD 업데이트        | docs update API spec              |
-| test     | 테스트    | 테스트 코드 추가/수정                | test item repository test         |
-| delete   | 삭제      | 사용하지 않는 파일/코드 삭제            | delete deprecated dto             |
-| revert   | 되돌리기   | 이전 커밋 취소                    | revert wrong calculation commit   |
-| wip      | 작업중    | 미완성 기능 임시 커밋                | wip implement stock movement      |
-| merge      | 작업중    | 브랜치 병합 커밋                | merge feature/item into main      |
+✔ Commit Types
+타입	설명	예시
+feat	기능 추가	feat: add sales chart
+fix	버그 수정	fix: correct stock amount calc
+style	UI/스타일 변경(기능 영향 없음)	style: update table layout
+refactor	코드 구조 개선	refactor: simplify sales service logic
+docs	문서 변경	docs: update ERD schema
+test	테스트 코드 추가/수정 (feature 내부에서 작성)	test: add item repository test
+delete	불필요 파일 삭제	delete: remove unused dto
+revert	커밋 되돌림	revert: undo wrong price calculation
+wip	작업중 커밋	wip: implement manager filter
+merge	머지 커밋	merge: feature/menu into develop
 
-
-📦 4. 팀 운영 규칙 요약
-
-✔ main에는 직접 커밋하지 않는다.
-
-✔ feature는 기능 단위로 생성한다.
-
-✔ UI-Service-Repository 포함 전체 세트를 feature에서 개발한다.
-
-✔ feature → develop merge 후 feature는 삭제한다.
-
-✔ main은 오직 배포 시점에만 update된다.
-
-✔ 커밋 메시지는 규칙대로 작성한다.
-
-✔ PR은 가능한 작고 명확한 단위로 올린다.
+※ test 커밋은 feature 브랜치 안에서만 사용하고 test/ 브랜치는 만들지 않음*
