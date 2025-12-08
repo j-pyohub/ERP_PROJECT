@@ -1,10 +1,10 @@
 package com.erp.service;
 
-import lombok.RequiredArgsConstructor;
+import com.erp.dto.StoreDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.data.domain.Page;
 
 @SpringBootTest
 public class StoreServiceTest {
@@ -13,6 +13,13 @@ public class StoreServiceTest {
 
     @Test
     void getStoresTest(){
-        System.out.println(storeService.getStores());
+        Page<StoreDTO> result =  storeService.getStoresList(0, null, null, null, null);
+        result.forEach(System.out::println);
+    }
+
+    @Test
+    void getStoresByNameTest(){
+        Page<StoreDTO> result =  storeService.getStoresList(0, null, null, "표", null);
+        result.forEach(System.out::println);
     }
 }
