@@ -2,6 +2,8 @@ package com.erp.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -17,9 +19,10 @@ public class StoreDTO {
     private String managerName;
     private String email;
     private String address;
+    private String phoneNumber;
     private String storePhoneNumber;
-    private String openedDate;
-    private String closedDate;
+    private LocalDate openedDate;
+    private LocalDate closedDate;
     private String openTime;
     private String closeTime;
     private String latitude;

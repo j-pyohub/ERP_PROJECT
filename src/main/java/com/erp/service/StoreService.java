@@ -15,7 +15,6 @@ import java.util.Map;
 public class StoreService {
     private final StoreDAO storeDAO;
 
-
     public Page<StoreDTO> getStoresList(Integer pageNo, String address, String storeName, String managerName, String storeStatus) {
         int pageSize = 10;
         int offset = pageNo * pageSize;
@@ -29,9 +28,12 @@ public class StoreService {
         params.put("limit", pageSize);
 
         List<StoreDTO> content = storeDAO.getStoresList(params);
-        long total = storeDAO.countStoreList(params);
+        Long total = storeDAO.countStoreList(params);
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return new PageImpl<>(content, pageable, total);
     }
 
+    public StoreDTO getStoreDetail(Long storeNo) {
+        return storeDAO.getStoreDetail(storeNo);
+    };
 }
