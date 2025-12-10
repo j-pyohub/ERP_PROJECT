@@ -18,6 +18,12 @@ public class MenuRestController {
     private final MenuService menuService;
     private final ItemService itemService;
 
+    @GetMapping("/setMenu")
+    public ResponseEntity<Map<String, String>> setMenu(@RequestBody MenuDTO menuDTO) {
+        menuService.updateMenu(menuDTO);
+        return ResponseEntity.ok(Map.of("message", "success"));
+    }
+
     @GetMapping("/menuList")
     public ResponseEntity<List<MenuDTO>> getMenuList(
             @RequestParam(required = false) String menuCategory,

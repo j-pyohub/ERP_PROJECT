@@ -14,6 +14,9 @@ import java.util.List;
 
 public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
 
+
+        boolean existsByStore_StoreNoAndMenu_MenuNo(Long storeNo, Long menuNo);
+
         @Modifying
         @Transactional
         @Query("""

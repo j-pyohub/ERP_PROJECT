@@ -236,4 +236,146 @@ public class MenuService {
             storeMenuRepository.save(storeMenu);
         }
     }
+
+    @Transactional
+    public void updateMenu(MenuDTO menuRequest) {
+
+        // 1) 기존 메뉴(L/M 또는 단일) 모두 조회
+        List<MenuDTO> oldList = menuDAO.getMenuByMenuCode(menuRequest.getMenuCode());
+        if (oldList == null || oldList.isEmpty()) {
+            throw new RuntimeException("메뉴 정보를 찾을 수 없습니다.");
+        }
+
+        boolean hasSize = "Y".equals(menuRequest.getSize());
+
+        // 2) 메뉴 기본정보 & 가격 수정 (Menu 테이블 UPDATE)
+        for (MenuDTO old : oldList) {
+
+            Integer menuPrice = null;
+
+            if (hasSize) {
+                if (old.getSize().equals("라지")) {
+                    menuPrice = menuRequest.getMenuPriceLarge();
+                } else if (old.getSize().equals("미디움")) {
+                    menuPrice = menuRequest.getMenuPriceMedium();
+                }
+            } else {
+                menuPrice = menuRequest.getMenuPrice();
+            }
+
+            MenuDTO updateDTO = MenuDTO.builder()
+                    .menuNo(old.getMenuNo())
+                    .menuCode(menuRequest.getMenuCode())
+                    .menuName(menuRequest.getMenuName())
+                    .menuCategory(old.getMenuCategory())   // 카테고리/사이즈 변경 불가
+                    .menuExplain(menuRequest.getMenuExplain())
+                    .menuImage(menuRequest.getMenuImage())
+                    .menuPrice(menuPrice)
+                    .releaseStatus(menuRequest.getReleaseStatus())
+                    .build();
+
+            menuDAO.setMenu(updateDTO);
+        }
+
+
+
+        // ============================================================
+        // 3) 출시 상태 변경 처리 (store_menu)
+        // ============================================================
+
+        String oldStatus = oldList.get(0).getReleaseStatus();   // 이전 상태
+        String newStatus = menuRequest.getReleaseStatus();       // 변경 후 상태
+
+        // ------------------------------------------------------------
+        // 조건 1) 출시 중 → 출시 중지 : store_menu 변경 없음
+        // ------------------------------------------------------------
+        // 매장에서는 기존에 등록된 메뉴를 수동으로 판매중단 처리할 수 있으므로
+        // 본사에서 출시 중지하더라도 store_menu는 건드리지 않는다.
+
+
+        // ------------------------------------------------------------
+        // 조건 2) 출시 중지(또는 예정) → 출시 중 : store_menu 자동 생성
+        // ------------------------------------------------------------
+        if (!"출시 중".equals(oldStatus) && "출시 중".equals(newStatus)) {
+
+            List<StoreDTO> stores = storeDAO.getActiveStores();
+
+            for (StoreDTO store : stores) {
+                for (MenuDTO m : oldList) {
+
+                    boolean exists =
+                            storeMenuRepository.existsByStore_StoreNoAndMenu_MenuNo(
+                                    store.getStoreNo(),
+                                    m.getMenuNo()
+                            );
+
+                    // 없으면 INSERT
+                    if (!exists) {
+                        StoreMenu sm = StoreMenu.builder()
+                                .store(Store.builder().storeNo(store.getStoreNo()).build())
+                                .menu(Menu.builder().menuNo(m.getMenuNo()).build())
+                                .salesStatus("판매중단")   // 기본값
+                                .build();
+
+                        storeMenuRepository.save(sm);
+                    }
+                }
+            }
+        }
+
+
+
+        // ============================================================
+        // 4) 레시피 삭제 후 재등록 (menu_ingredient)
+        // ============================================================
+
+        // 기존 모든 재료 삭제
+        for (MenuDTO old : oldList) {
+            menuIngredientRepository.deleteByMenu_MenuNo(old.getMenuNo());
+        }
+
+        // 새 재료 등록
+        for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
+
+            if (!hasSize) {
+                // 단일 메뉴
+                Integer qty = ing.getQuantity();
+                if (qty == null) continue;
+
+                Long menuNo = oldList.get(0).getMenuNo();
+
+                MenuIngredient entity = MenuIngredient.builder()
+                        .menu(Menu.builder().menuNo(menuNo).build())
+                        .item(Item.builder().itemNo(ing.getItemNo()).build())
+                        .ingredientQuantity(qty)
+                        .build();
+
+                menuIngredientRepository.save(entity);
+                continue;
+            }
+
+            // 라지/미디움 메뉴일 경우
+            for (MenuDTO m : oldList) {
+
+                Integer qty = null;
+
+                if (m.getSize().equals("라지")) {
+                    qty = ing.getQuantityLarge();
+                } else if (m.getSize().equals("미디움")) {
+                    qty = ing.getQuantityMedium();
+                }
+
+                if (qty == null) continue;
+
+                MenuIngredient entity = MenuIngredient.builder()
+                        .menu(Menu.builder().menuNo(m.getMenuNo()).build())
+                        .item(Item.builder().itemNo(ing.getItemNo()).build())
+                        .ingredientQuantity(qty)
+                        .build();
+
+                menuIngredientRepository.save(entity);
+            }
+        }
+    }
+
 }
