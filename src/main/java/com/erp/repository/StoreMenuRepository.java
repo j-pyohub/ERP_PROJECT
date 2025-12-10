@@ -144,5 +144,4 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
         List<StoreMenuDTO> findStoreMenuByStoreNo(
                 @Param("storeNo") Long storeNo
         );
-
 }

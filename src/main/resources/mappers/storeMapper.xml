@@ -164,7 +164,7 @@
         WHERE s.store_no = #{store_no}
     </select>
 
-    <insert id="addStore" parameterType="com.erp.dto.StoreDTO">
+    <insert id="addStore" parameterType="com.erp.dto.StoreDTO" useGeneratedKeys="true" keyProperty="storeNo">
         INSERT INTO store (
             store_manager_id,
             store_status,

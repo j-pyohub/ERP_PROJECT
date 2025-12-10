@@ -12,4 +12,7 @@ public class StoreController {
     public String storeListUI() {
         return "member/storeListUI";
     }
+
+    @GetMapping("/userJoin")
+    public String userJoin() {return "member/memberAddUI";}
 }
