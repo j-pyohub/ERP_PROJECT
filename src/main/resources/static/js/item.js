@@ -337,39 +337,45 @@
         });
     }
 
-    // 실제 S3 업로드는 저장/수정 버튼 누를 때만
+// 실제 S3 업로드는 저장/수정 버튼 누를 때만 (fetch 버전)
     function uploadImageIfNeeded() {
-        return new Promise(function (resolve, reject) {
-            const $hidden = $('#itemImageUrl');
+        const $hidden = $('#itemImageUrl');
 
-            // 새로 선택한 파일이 없으면 hidden 값 그대로 사용
-            if (!selectedImageFile) {
-                resolve($hidden.val() || null);
-                return;
-            }
+        // 새로 선택한 파일이 없으면 hidden 값 그대로 사용
+        if (!selectedImageFile) {
+            return Promise.resolve($hidden.val() || null);
+        }
 
-            const formData = new FormData();
-            formData.append('file', selectedImageFile);
+        const formData = new FormData();
+        formData.append('file', selectedImageFile);
 
-            $.ajax({
-                url: API_UPLOAD_IMG,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (url) {
-                    $hidden.val(url);
-                    selectedImageFile = null; // 한 번 업로드했으니 초기화
-                    toast('이미지 업로드 완료', 'success');
-                    resolve(url);
-                },
-                error: function (xhr) {
-                    console.error(xhr);
-                    toast('이미지 업로드 실패', 'danger');
-                    reject(xhr);
+        return fetch(API_UPLOAD_IMG, {
+            method: 'POST',
+            body: formData
+            // FormData 쓸 때는 content-type 직접 설정 X
+        })
+            .then(res => {
+                if (res.status === 403) {
+                    throw new Error('권한이 없습니다.');
                 }
+                if (!res.ok) {
+                    throw new Error('이미지 업로드 실패');
+                }
+                // 서버에서 URL 문자열을 그대로 내려준다고 가정
+                return res.text(); // JSON이면 res.json() 으로 변경
+            })
+            .then(url => {
+                $hidden.val(url);
+                selectedImageFile = null; // 한 번 업로드했으니 초기화
+                toast('이미지 업로드 완료', 'success');
+                return url;
+            })
+            .catch(err => {
+                console.error(err);
+                toast(err.message || '이미지 업로드 실패', 'danger');
+                // 상위 .catch 에서도 처리할 수 있도록 다시 throw
+                throw err;
             });
-        });
     }
 
     function collectFormData() {
