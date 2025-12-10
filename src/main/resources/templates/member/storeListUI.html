@@ -269,7 +269,7 @@
 <script>
     const storeTable = $("#storeList")
 
-    function loadPage(pageNo = 0) {
+    function loadPage(pageNo) {
         const storeStatus = $("#storeStatus").val();
         const searchType = $("#searchType").val();
         const keyword = $("#searchKeyword").val();
@@ -287,11 +287,12 @@
             if (searchType === "manager") params.append("managerName", keyword);
         }
 
-        fetchUtil(`/getStoreList?${params.toString()}`, data => {
+        fetchUtil(`/getStoreList?page=${pageNo - 1}`, data => {
             renderStoreList(data.content);
-            updatePaginationUI(pageNo + 1, data.totalPages);
+            updatePaginationUI(pageNo, data.totalPages);
             loadMap(data.content);
         });
+
 
 
     }
@@ -370,10 +371,10 @@
         })
     }
     $(window).on("load", function () {
-        loadPage(0);
+        loadPage(1);
     });
     $("#storeStatus").on("change", function () {
-        loadPage(0);
+        loadPage(1);
     });
 
     function openStoreDetail(no) {
@@ -391,16 +392,12 @@
         $("#mdCloseDate").text(s.closeDate);
 
         new bootstrap.Modal(document.getElementById("storeDetailModal")).show();
-    }
+    };
 
-    $(document).ready(function () {
-        $("#searchBtn").on("click", function () {
-            loadPage(0);
-        });
-
-        $("#storeTable").on("click", ".open-detail", function () {
-            openStoreDetail($(this).data("no"));
-        });
+    $(document).on("click", "#pagination .page-link", function (e) {
+        e.preventDefault();      // a 태그 기본 동작 막기
+        const page = $(this).data("page");
+        loadPage(page);          // 원하는 페이지 로드
     });
 
 </script>
