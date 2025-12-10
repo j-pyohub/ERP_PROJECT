@@ -318,6 +318,9 @@
     $(window).on("load", function () {
         loadPage(0);
     });
+    $("#storeStatus").on("change", function () {
+        loadPage(0);
+    });
 
     function openStoreDetail(no) {
         var s = stores.find(x => x.no === no);
