@@ -152,11 +152,18 @@
                     <div class="field-row">
                         <div class="field-label">개점/폐점</div>
                         <div class="field-value">
-                            <span th:text="${store.openedDate}">2023-03-01</span>
+                            <!-- openedDate: LocalDate → yyyy-MM-dd 포맷 -->
+                            <span th:text="${store.openedDate != null
+                        ? #temporals.format(store.openedDate, 'yyyy-MM-dd')
+                        : '-'}">2023-03-01</span>
                             &nbsp; ~ &nbsp;
-                            <span th:text="${store.storeStatus == '폐업' ? store.closedDate : '-'}">-</span>
+                            <!-- 폐업 상태이고 closedDate가 있을 때만 날짜 표시 -->
+                            <span th:text="${store.storeStatus == '폐업' and store.closedDate != null
+                        ? #temporals.format(store.closedDate, 'yyyy-MM-dd')
+                        : '-'}">-</span>
                         </div>
                     </div>
+
 
                     <!-- 영업 시간 (AM/PM 표기) -->
                     <div class="field-row">
@@ -214,7 +221,7 @@
                         <div class="field-value">
                             <input type="text" class="form-control-plaintext"
                                    readonly
-                                   th:value="${store.managerPhoneNumber}"
+                                   th:value="${store.phoneNumber}"
                                    value="010-9876-5432">
                         </div>
                     </div>
@@ -238,7 +245,6 @@
 
     <div class="text-center mt-4">
         <button class="btn custom-btn px-4" id="storeSetBtn">수정</button>
-        <button class="btn custom-btn px-4 gray-btn" id="storeRemoveBtn">삭제</button>
     </div>
 
     <!-- 알림 모달 -->
@@ -274,15 +280,6 @@
         return hh + ':' + m + ' ' + suffix;
     }
 
-    function showAlert(message, onClose) {
-        $("#alertMessage").text(message);
-        $("#alertModal")
-            .off("hidden.bs.modal")
-            .on("hidden.bs.modal", function () {
-                if (typeof onClose === "function") onClose();
-            });
-        $("#alertModal").modal("show");
-    }
 
     $(function () {
         // 🔹 영업 시간 AM/PM 변환
@@ -309,10 +306,6 @@
             alert('직영점 정보 수정 기능은 추후 구현 예정입니다.');
         });
 
-        // 삭제 기능: 모달로 안내 (구현 전)
-        $('#storeRemoveBtn').on('click', function () {
-            showAlert('직영점 정보를 삭제하시겠습니까?');
-        });
     });
 </script>
 
