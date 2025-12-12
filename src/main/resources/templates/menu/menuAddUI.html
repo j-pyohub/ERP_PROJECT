@@ -351,13 +351,13 @@
 
         const formData = new FormData();
         formData.append(
-            "menu",
+            "menuDTO",
             new Blob([JSON.stringify(requestBody)], { type: "application/json" })
         );
 
-        const menuImg = $("#menuImage")[0].files[0];
-        if(menuImg){
-            formData.append("menuImage", menuImg);
+        const menuImage = $("#menuImage")[0].files[0];
+        if(menuImage){
+            formData.append("menuImage", menuImage);
         }
 
         fetchUtil(`/menu/addMenu`,

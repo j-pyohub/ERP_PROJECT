@@ -1,15 +1,15 @@
-function fetchUtil(url, action, method="GET", json=null){
+function fetchUtil(url, action, method="GET", data=null){
     const options = {
         method: method
     };
     if (data instanceof FormData) {
         options.body = data;
     }
-    else if(method !== "GET" && json !== null){
+    else if(method !== "GET" && data !== null){
         options.headers = {
             "Content-Type" : "application/json"
         };
-        options.body = JSON.stringify(json);
+        options.body = JSON.stringify(data);
     }
 
     fetch(url, options)

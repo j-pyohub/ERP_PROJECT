@@ -110,9 +110,9 @@ public class MenuService {
         return new ArrayList<>(merged.values());
     }
 
-    public void addMenu(MenuDTO menuRequest, MultipartFile image) {
-        if (image != null && !image.isEmpty()) {
-            String imageUrl = s3Uploader.uploadMenuImage(image, menuRequest.getMenuCode());
+    public void addMenu(MenuDTO menuRequest, MultipartFile menuImage) {
+        if (menuImage != null && !menuImage.isEmpty()) {
+            String imageUrl = s3Uploader.uploadMenuImage(menuImage, menuRequest.getMenuCode());
             menuRequest.setMenuImage(imageUrl);
         }
 

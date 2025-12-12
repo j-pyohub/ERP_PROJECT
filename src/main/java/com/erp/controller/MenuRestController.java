@@ -44,9 +44,9 @@ public class MenuRestController {
     @PostMapping(value = "/addMenu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addMenu(
             @RequestPart MenuDTO menuDTO,
-            @RequestPart(value = "image", required = false) MultipartFile image
+            @RequestPart(value = "menuImage", required = false) MultipartFile menuImage
     ){
-        menuService.addMenu(menuDTO, image);
+        menuService.addMenu(menuDTO, menuImage);
         return ResponseEntity.ok().body(Map.of("message", "add Menu success"));
     }
 

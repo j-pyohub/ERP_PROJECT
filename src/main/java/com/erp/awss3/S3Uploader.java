@@ -70,7 +70,6 @@ public class S3Uploader {
                 .bucket(bucket)
                 .key(key)
                 .contentType(image.getContentType())
-                // ★ 여기서 ACL 절대 넣지 않기 (The bucket does not allow ACLs 에러 방지)
                 .build();
 
         try {
@@ -80,7 +79,6 @@ public class S3Uploader {
             throw new RuntimeException("S3 업로드 중 오류 발생", e);
         }
 
-        // 퍼블릭 접근을 허용하는 버킷 정책이 있다고 가정
         return String.format("https://%s.s3.%s.amazonaws.com/%s", bucket, REGION, key);
     }
 }
