@@ -146,7 +146,7 @@
             s.store_status,
             s.store_manager_id,
             m.manager_name,
-            m.phone_number AS manager_phone_number,
+            m.phone_number,
             m.email,
             s.address,
             s.latitude,

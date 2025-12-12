@@ -20,7 +20,6 @@ public class StoreDTO {
     private String email;
     private String address;
     private String storePhoneNumber;
-    private String managerPhoneNumber;
     private String openedDate;
     private String closedDate;
     private String openTime;
