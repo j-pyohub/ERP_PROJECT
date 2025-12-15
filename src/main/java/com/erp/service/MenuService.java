@@ -246,7 +246,19 @@ public class MenuService {
     }
 
     @Transactional
-    public void updateMenu(MenuDTO menuRequest) {
+    public void updateMenu(MenuDTO menuRequest, MultipartFile menuImage) {
+
+        if (menuRequest.isRemoveImage()) {
+            menuRequest.setMenuImage(null);
+
+        } else if (menuImage != null && !menuImage.isEmpty()) {
+            String imageUrl =
+                    s3Uploader.uploadMenuImage(menuImage, menuRequest.getMenuCode());
+            menuRequest.setMenuImage(imageUrl);
+
+        } else {
+            menuRequest.setMenuImage(menuRequest.getOriginImage());
+        }
 
         List<MenuDTO> oldList = menuDAO.getMenuByMenuCode(menuRequest.getMenuCode());
         if (oldList == null || oldList.isEmpty()) {

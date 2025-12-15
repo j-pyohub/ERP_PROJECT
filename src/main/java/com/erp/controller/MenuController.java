@@ -32,7 +32,7 @@ public class MenuController {
         model.addAttribute("sizeList", menu.getSizeList());
         model.addAttribute("ingredients", menu.getIngredients());
         model.addAttribute("hasSize", menu.isHasSize());
-
+        model.addAttribute("menuImage", menu.getMenuImage());
         return "menu/menuSetUI";
     }
 
