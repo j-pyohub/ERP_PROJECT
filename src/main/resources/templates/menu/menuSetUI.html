@@ -83,6 +83,12 @@
             margin: 0 auto;
             display: block;
         }
+
+        .detail-img {
+            width: 220px;
+            height: 160px;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -164,8 +170,9 @@
             </div>
 
             <div class="col-md-4">
-                <label class="form-label fw-semibold">대표 이미지</label>
-                <input type="file" class="form-control" id="menuImage" th:text="${menu.menuImage}" :>
+                <label class="form-label fw-semibold">대표 이미지</label><input type="file" class="form-control" id="menuImage" >
+                <img th:src="${menu.menuImage}" class="detail-img rounded shadow-sm" th:alt="${menu.menuName}">
+
             </div>
 
         </div>
