@@ -24,8 +24,6 @@ public class AddressRestController {
     @Value("${juso.addrKey.key}")
     private String addrKey;
 
-    @Value("${juso.coordKey.key}")
-    private String coordKey;
 
     @GetMapping("/addr")
     public ResponseEntity<Map<String, Object>> getAddress() throws JsonProcessingException {
@@ -51,31 +49,5 @@ public class AddressRestController {
         return ResponseEntity.ok().body(result);
     }
 
-    @GetMapping("coord")
-    public ResponseEntity<Map<String, Object>> getCoord(@RequestParam String admCd,
-                                                        @RequestParam String rnMgtSn,
-                                                        @RequestParam String buldMnnm,
-                                                        @RequestParam String buldSlno) throws JsonProcessingException {
-        StringBuilder uri = new StringBuilder("https://business.juso.go.kr/addrlink/addrCoordApi.do");
-        uri.append("?confmKey=").append(coordKey);
-        uri.append("&admCd=").append(admCd);
-        uri.append("&rnMgtSn=").append(rnMgtSn);
-        uri.append("&udrtYn=0");
-        uri.append("&buldMnnm=").append(buldMnnm);
-        uri.append("&buldSlno=").append(buldSlno);
-        uri.append("&resultType=json");
 
-        System.out.println(uri.toString());
-
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, Object> result = restTemplate.getForObject(uri.toString(), Map.class);
-
-        System.out.println(result);
-
-        if(result == null){
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().body(result);
-    }
 }

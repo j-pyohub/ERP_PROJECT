@@ -297,31 +297,36 @@
     function loadMarkers(data) {
 
         if (!data) return;
+        var geocoder = new kakao.maps.services.Geocoder();
 
-        const positions = data.map(store => ({
-            content: `<div>${store.storeName}</div>`,
-            latlng: new kakao.maps.LatLng(store.latitude, store.longitude)
-        }));
+        data.forEach(store => {
+            trimAddress = store.address.split(',');
+            geocoder.addressSearch(trimAddress[0], function(result, status){
+                if(status !== kakao.maps.services.Status.OK){
+                    console.log('주소 변환 실패' + store.address)
+                    return;
+                }
+                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-        positions.forEach(pos => {
-            const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+                const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
 
-            const marker = new kakao.maps.Marker({
-                map: map,
-                position: pos.latlng,
-                image: markerImage
-            });
+                const marker = new kakao.maps.Marker({
+                    map: map,
+                    position: coords,
+                    image: markerImage
+                });
 
-            const infowindow = new kakao.maps.InfoWindow({
-                content: pos.content
-            });
+                const infowindow = new kakao.maps.InfoWindow({
+                    content: `<div>${store.storeName}</div>`
+                });
 
-            kakao.maps.event.addListener(marker, 'mouseover', () => {
-                infowindow.open(map, marker);
-            });
+                kakao.maps.event.addListener(marker, 'mouseover', () => {
+                    infowindow.open(map, marker);
+                });
 
-            kakao.maps.event.addListener(marker, 'mouseout', () => {
-                infowindow.close();
+                kakao.maps.event.addListener(marker, 'mouseout', () => {
+                    infowindow.close();
+                });
             });
         });
     }
