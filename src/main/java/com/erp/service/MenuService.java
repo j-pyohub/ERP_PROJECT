@@ -1,6 +1,8 @@
 package com.erp.service;
 
 import com.erp.awss3.S3Uploader;
+import com.erp.controller.exception.ItemNotFoundException;
+import com.erp.controller.exception.MenuCreateException;
 import com.erp.controller.exception.NoMenuException;
 import com.erp.dao.ItemDAO;
 import com.erp.dao.MenuDAO;
@@ -43,7 +45,7 @@ public class MenuService {
 
         // 1) 단일 메뉴 조회
         MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
-        if (menu == null) throw new NoMenuException("없는 메뉴입니다.");
+        if (menu == null) throw new NoMenuException(menuNo);
 
         // 2) 코드로 전체 사이즈 메뉴 조회 (L/M/단일)
         List<MenuDTO> sizeList = menuDAO.getMenuByMenuCode(menu.getMenuCode());
@@ -130,7 +132,7 @@ public class MenuService {
             menuDAO.addMenu(largeDTO);
             Long largeMenuNo = largeDTO.getMenuNo();
             if (largeMenuNo == null) {
-                throw new RuntimeException("fail");
+                throw new MenuCreateException("라지 메뉴 등록 실패");
             }
 
             for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
@@ -139,7 +141,7 @@ public class MenuService {
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
 
                 if (itemDTO == null) {
-                    throw new RuntimeException("Item not found: " + ing.getItemNo());
+                    throw new ItemNotFoundException(ing.getItemNo());
                 }
 
                 Item item = Item.builder()
@@ -170,7 +172,7 @@ public class MenuService {
             menuDAO.addMenu(mediumDTO);
             Long mediumMenuNo = mediumDTO.getMenuNo();
             if (mediumMenuNo == null) {
-                throw new RuntimeException("fail");
+                throw new MenuCreateException("미디움 메뉴 등록 실패");
             }
 
             for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
@@ -178,7 +180,7 @@ public class MenuService {
                 if (ing.getQuantityMedium() == null) continue;
 
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
-                if (itemDTO == null) throw new RuntimeException("Item not found: " + ing.getItemNo());
+                if (itemDTO == null) throw new ItemNotFoundException(ing.getItemNo());
 
                 MenuIngredient entity = MenuIngredient.builder()
                         .menu(Menu.builder().menuNo(mediumMenuNo).build())
@@ -209,13 +211,13 @@ public class MenuService {
             Long menuNo = oneDTO.getMenuNo();
 
             if (menuNo == null) {
-                throw new RuntimeException("fail");
+                throw new MenuCreateException("단일 메뉴 등록 실패");
             }
 
             for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
 
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
-                if (itemDTO == null) throw new RuntimeException("Item not found: " + ing.getItemNo());
+                if (itemDTO == null) throw new ItemNotFoundException(ing.getItemNo());
 
                 MenuIngredient entity = MenuIngredient.builder()
                         .menu(Menu.builder().menuNo(menuNo).build())
@@ -366,7 +368,7 @@ public class MenuService {
 
         MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
         if (menu == null) {
-            throw new NoMenuException("없는 메뉴입니다.");
+            throw new NoMenuException(menuNo);
         }
 
         List<MenuDTO> sameCodeMenus = menuDAO.getMenuByMenuCode(menu.getMenuCode());
