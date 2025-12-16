@@ -362,16 +362,16 @@
 
         fetchUtil(`/menu/addMenu`,
             result => {
-                if (result.message === "fail") {
-                    showAlert("메뉴 등록 실패", () => {
-                        location.href = `/menu/addMenuUI`;
-                    })
-                } else {
+                    if (!result.ok) {
+                        showAlert(result.message, () => {
+                            location.href = "/menu/addMenuUI";
+                        });
+                        return;
+                    }
                     showAlert("메뉴 등록 성공", () => {
-                        location.href = `/menu/menuUI`;
+                        location.href = "/menu/menuUI";
                     });
-                }
-            },
+                },
             "POST",
             formData
         )
