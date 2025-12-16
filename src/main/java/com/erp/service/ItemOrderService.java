@@ -77,7 +77,7 @@ public class ItemOrderService {
         ItemOrder itemOrder = repoOrder.findByItemOrderNo(orderNo);
 
         if(itemOrder == null){
-            throw new ItemOrderNotFoundException(orderNo);
+            throw new ItemOrderNotFoundException("존재하지 않는 발주입니다.: " + orderNo);
         }
 
         // 선택한 발주 요청 번호 데이터 상태 취소 변경
@@ -101,7 +101,7 @@ public class ItemOrderService {
         }
         else storeItem = storeItemList.get(0);
 
-        if(storeItem == null) throw new StoreItemNotFoundException(orderDetail.getItemOrderNo().getStoreNo().getStoreNo());
+        if(storeItem == null) throw new StoreItemNotFoundException("직영점 품목 정보 조회 실패: " + orderDetail.getItemOrderNo().getStoreNo().getStoreNo());
 
         StoreStock storeStock = storeStockRepo.findFirstByStoreItemNoOrderByStoreStockNoDesc(storeItem.getStoreItemNo()); // 현재 매장 품목의 수량 데이터 획득
 
@@ -207,7 +207,7 @@ public class ItemOrderService {
 
     public void approveItemOrder(Long itemOrderNo, String managerId) {
         // 대기 중 발주 선택
-        ItemOrder itemOrder = repoOrder.findById(itemOrderNo).orElseThrow(() -> new ItemOrderNotFoundException(itemOrderNo) );
+        ItemOrder itemOrder = repoOrder.findById(itemOrderNo).orElseThrow(() -> new ItemOrderNotFoundException("존재하지 않는 발주입니다.: " + itemOrderNo) );
 
         // 선택한 발주 요청 번호 데이터 상태 승인 변경
         if(itemOrder != null){
@@ -220,7 +220,7 @@ public class ItemOrderService {
     
     public void declineItemOrder(Long itemOrderNo, String managerId){
         // 대기 중 발주 선택
-        ItemOrder itemOrder = repoOrder.findById(itemOrderNo).orElseThrow(() -> new ItemOrderNotFoundException(itemOrderNo) );
+        ItemOrder itemOrder = repoOrder.findById(itemOrderNo).orElseThrow(() -> new ItemOrderNotFoundException("존재하지 않는 발주입니다.: " + itemOrderNo) );
 
         // 선택한 발주 요청 번호 데이터 상태 승인 변경
         if(itemOrder != null){

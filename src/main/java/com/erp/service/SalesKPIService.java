@@ -28,7 +28,7 @@ public class SalesKPIService {
         LocalDate startDate = convert(type, start, false);
         LocalDate endDate   = convert(type, end, true);
         if (startDate.isAfter(endDate)) {
-            throw new InvalidDateRangeException();
+            throw new InvalidDateRangeException("시작날짜가 완료날짜보다 늦을 수 없다.");
         }
         if (storeNo != null) {
             return getStoreKPI(storeNo, type, startDate, endDate);

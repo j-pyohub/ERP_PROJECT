@@ -116,11 +116,11 @@ public class StoreItemService {
 
         // 품목 조회
         StoreItem storeItem = storeItemRepository.findById(storeItemNo)
-                .orElseThrow(() -> new StoreItemNotFoundException(storeItemNo));
+                .orElseThrow(() -> new StoreItemNotFoundException("직영점 품목 정보 조회 실패: " + storeItemNo));
 
         // 본사 하한선이 이미 있고, 직영점 계정이 수정하려고 하면 차단
         if (!isManagerRole && storeItem.getManagerLimit() != null) {
-            throw new StoreItemLimitConflictException();
+            throw new StoreItemLimitConflictException("본사에서 이미 하한선을 설정한 품목입니다. 직영점에서는 수정할 수 없습니다.");
         }
 
         // 역할에 따라 하한선 필드 분기
