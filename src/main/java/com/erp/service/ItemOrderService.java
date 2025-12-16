@@ -101,7 +101,7 @@ public class ItemOrderService {
         }
         else storeItem = storeItemList.get(0);
 
-        if(storeItem == null) throw new StoreItemNotFoundException(orderDetail.getItemOrderNo().getStoreNo().getStoreNo());
+        if(storeItem == null) throw new StoreItemNotFoundException("직영점 품목 정보 조회 실패: " + orderDetail.getItemOrderNo().getStoreNo().getStoreNo());
 
         StoreStock storeStock = storeStockRepo.findFirstByStoreItemNoOrderByStoreStockNoDesc(storeItem.getStoreItemNo()); // 현재 매장 품목의 수량 데이터 획득
 

@@ -45,7 +45,7 @@ public class MenuService {
 
         // 1) 단일 메뉴 조회
         MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
-        if (menu == null) throw new NoMenuException(menuNo);
+        if (menu == null) throw new NoMenuException("존재하지 않는 메뉴입니다. : " + menuNo);
 
         // 2) 코드로 전체 사이즈 메뉴 조회 (L/M/단일)
         List<MenuDTO> sizeList = menuDAO.getMenuByMenuCode(menu.getMenuCode());
@@ -141,7 +141,7 @@ public class MenuService {
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
 
                 if (itemDTO == null) {
-                    throw new ItemNotFoundException(ing.getItemNo());
+                    throw new ItemNotFoundException("재료 정보 조회 실패: " + ing.getItemNo());
                 }
 
                 Item item = Item.builder()
@@ -180,7 +180,7 @@ public class MenuService {
                 if (ing.getQuantityMedium() == null) continue;
 
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
-                if (itemDTO == null) throw new ItemNotFoundException(ing.getItemNo());
+                if (itemDTO == null) throw new ItemNotFoundException("재료 정보 조회 실패: " + ing.getItemNo());
 
                 MenuIngredient entity = MenuIngredient.builder()
                         .menu(Menu.builder().menuNo(mediumMenuNo).build())
@@ -217,7 +217,7 @@ public class MenuService {
             for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
 
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
-                if (itemDTO == null) throw new ItemNotFoundException(ing.getItemNo());
+                if (itemDTO == null) throw new ItemNotFoundException("재료 정보 조회 실패: " + ing.getItemNo());
 
                 MenuIngredient entity = MenuIngredient.builder()
                         .menu(Menu.builder().menuNo(menuNo).build())
@@ -368,7 +368,7 @@ public class MenuService {
 
         MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
         if (menu == null) {
-            throw new NoMenuException(menuNo);
+            throw new NoMenuException("존재하지 않는 메뉴입니다: " + menuNo);
         }
 
         List<MenuDTO> sameCodeMenus = menuDAO.getMenuByMenuCode(menu.getMenuCode());

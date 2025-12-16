@@ -116,7 +116,7 @@ public class StoreItemService {
 
         // 품목 조회
         StoreItem storeItem = storeItemRepository.findById(storeItemNo)
-                .orElseThrow(() -> new StoreItemNotFoundException(storeItemNo));
+                .orElseThrow(() -> new StoreItemNotFoundException("직영점 품목 정보 조회 실패: " + storeItemNo));
 
         // 본사 하한선이 이미 있고, 직영점 계정이 수정하려고 하면 차단
         if (!isManagerRole && storeItem.getManagerLimit() != null) {

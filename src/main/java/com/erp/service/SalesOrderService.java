@@ -1,6 +1,9 @@
 package com.erp.service;
 
 import com.erp.controller.exception.NoIngredientException;
+import com.erp.controller.exception.StoreItemNotFoundException;
+import com.erp.controller.exception.StoreMenuNotFoundException;
+import com.erp.controller.exception.StoreNotFoundException;
 import com.erp.dto.SalesOrderDTO;
 import com.erp.dto.SalesOrderDetailDTO;
 import com.erp.dto.SalesOrderRequestDTO;
@@ -42,7 +45,8 @@ public class SalesOrderService {
         List<StoreMenuDTO> menuDTOList = request.getMenuList();
         List<SalesOrderDetailDTO> detailDTOList = request.getDetailList();
 
-        Store store = storeRepository.findById(storeNo).orElse(null);
+        Store store = storeRepository.findById(storeNo)
+                .orElseThrow(() -> new StoreNotFoundException("매장 정보를 찾을 수 없습니다: " + storeNo));
 
         int totalOrderAmount = 0;
         for (SalesOrderDetailDTO dto : detailDTOList) {
@@ -66,7 +70,7 @@ public class SalesOrderService {
 
             StoreMenu storeMenu = storeMenuRepository
                     .findById(storeMenuDTO.getStoreMenuNo())
-                    .orElse(null);
+                    .orElseThrow(() -> new StoreMenuNotFoundException("판매 메뉴 정보 조회 실패: "+storeMenuDTO.getStoreMenuNo()));
 
             StoreOrderDetail orderDetail = StoreOrderDetail.builder()
                     .salesOrder(salesOrder)
@@ -89,7 +93,7 @@ public class SalesOrderService {
 
                 StoreItem storeItem = storeItemRepository
                         .findByStoreNoAndItemNo(storeNo, itemNo)
-                        .stream().findFirst().orElse(null);
+                        .stream().findFirst().orElseThrow(() -> new StoreItemNotFoundException("직영점 품목 정보 조회 실패" + itemNo));
 
                 StoreStock latestStock = storeStockRepository
                         .findFirstByStoreItemNoOrderByStoreStockNoDesc(storeItem.getStoreItemNo());
@@ -98,7 +102,7 @@ public class SalesOrderService {
                 int updatedQty = previousQty - totalQty;
 
                 if (updatedQty < 0 ) {
-                    throw new NoIngredientException("fail");
+                    throw new NoIngredientException("재고 부족으로 주문 실패. " + itemNo + " 필요 수랑: " + totalQty);
                 }
 
                 StoreStock newStock = StoreStock.builder()
