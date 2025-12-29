@@ -10,10 +10,20 @@
     <script src="/js/util.js"></script>
 
     <style>
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 2000;
+        }
+
         body {
             background-color: #fafafa;
         }
-
+        .custom-container {
+            max-width: 1500px;
+        }
         .custom-btn {
             background-color: #FFEEAA !important;
             border-color: #FFEEAA !important;
@@ -77,10 +87,10 @@
     </style>
 </head>
 
-<body class="p-4">
+<body class="bg-light">
 <header th:replace="fragments/toolBar :: toolBar"></header>
-
-    <div class="page-wrap">
+<div class="container custom-container mt-5 my-5">
+    <div class="bg-white border rounded p-5">
 
         <h3 class="fw-bold mb-4">계정 등록</h3>
 
