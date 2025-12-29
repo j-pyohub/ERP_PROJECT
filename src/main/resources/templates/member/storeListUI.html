@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>직영점 목록 조회</title>
@@ -11,7 +11,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/util.js"></script>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55b8e6a9e27878899b29b23d80c19d82&libraries=services,clusterer,drawing"></script>
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=55b8e6a9e27878899b29b23d80c19d82&libraries=services,clusterer,drawing"></script>
     <style>
         header {
             position: fixed;
@@ -20,8 +21,9 @@
             width: 100%;
             z-index: 2000;
         }
-        body {
-            background-color: #e5e5e5;
+
+        .custom-container {
+            max-width: 1500px;
         }
 
         .section-box {
@@ -46,6 +48,7 @@
         #pagination ul {
             justify-content: center;
         }
+
         #pagination li {
             cursor: pointer;
         }
@@ -53,98 +56,100 @@
     </style>
 </head>
 
-<body class="p-3">
-<header th:replace="fragments/toolBar :: toolBar"></header>
-<div class="border border-secondary" style="max-width:1500px; margin:0 auto; background:#fff;">
+<body class="bg-light">
+<header th:replace="~{fragments/toolBar :: toolBar}"></header>
+<div class="container custom-container mt-5 my-5">
+    <div class="bg-white border rounded p-5">
+        <!-- 제목 -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">목록 조회</h2>
+        </div>
 
-    <!-- 제목 -->
-    <div class="p-3 fs-3 fw-bold">직영점 목록 조회</div>
+        <!-- 검색 UI는 그대로 유지 -->
+        <div class="px-3 mb-3">
+            <div class="d-flex justify-content-end align-items-end">
 
-    <!-- 검색 UI는 그대로 유지 -->
-  <div class="px-3 mb-3">
-    <div class="d-flex justify-content-end align-items-end">
-
-      <div class="me-4">
-        <label class="fw-semibold me-2">운영 상태</label>
-        <select id="storeStatus" class="form-select d-inline-block">
-          <option value="all">전체</option>
-          <option value="영업중">영업중</option>
-          <option value="오픈준비">오픈준비</option>
-          <option value="폐업">폐업</option>
-        </select>
-      </div>
-
-      <div class="me-4">
-        <label class="fw-semibold me-2">검색 조건</label>
-        <select id="searchType" class="form-select d-inline-block">
-          <option value="region">지역</option>
-          <option value="storename">직영점명</option>
-          <option value="manager">점장명</option>
-        </select>
-      </div>
-
-      <!-- input -->
-      <div>
-        <label class="fw-semibold me-2"> </label>
-        <input type="text"
-               id="searchKeyword"
-               class="form-control mb-0"
-               placeholder="검색어 입력"
-               style="width:180px;">
-      </div>
-
-      <!-- button (여기서 me-4 제거) -->
-      <div>
-        <label class="fw-semibold me-2"> </label>
-        <button id="searchBtn" class="btn btn-custom-yellow">
-          검색
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- 본문 -->
-    <div class="px-3 pb-4">
-        <div class="section-box">
-            <div class="row">
-
-                <!-- 좌측 목록 -->
-                <div class="col-7">
-                    <table class="table table-hover align-middle" id="storeList">
-                        <thead>
-                        <tr class="text-center">
-                            <th>번호</th>
-                            <th>직영점명</th>
-                            <th>지역</th>
-                            <th>점장명</th>
-                            <th>상태</th>
-                            <th>상세보기</th>
-                        </tr>
-                        </thead>
-                        <tbody id="storeTable"></tbody>
-                    </table>
-
-                    <nav>
-                        <ul class="pagination justify-content-center" id="pagination">
-                        </ul>
-                    </nav>
+                <div class="me-4">
+                    <label class="fw-semibold me-2">운영 상태</label>
+                    <select id="storeStatus" class="form-select d-inline-block">
+                        <option value="all">전체</option>
+                        <option value="영업중">영업중</option>
+                        <option value="오픈준비">오픈준비</option>
+                        <option value="폐업">폐업</option>
+                    </select>
                 </div>
 
-                <!-- 우측 지도 -->
-                <div class="col-5">
-                    <div id="map" style="width:100%; height:500px;">
+                <div class="me-4">
+                    <label class="fw-semibold me-2">검색 조건</label>
+                    <select id="searchType" class="form-select d-inline-block">
+                        <option value="region">지역</option>
+                        <option value="storename">직영점명</option>
+                        <option value="manager">점장명</option>
+                    </select>
+                </div>
 
-                    </div>
+                <!-- input -->
+                <div>
+                    <label class="fw-semibold me-2"> </label>
+                    <input type="text"
+                           id="searchKeyword"
+                           class="form-control mb-0"
+                           placeholder="검색어 입력"
+                           style="width:180px;">
+                </div>
+
+                <!-- button (여기서 me-4 제거) -->
+                <div>
+                    <label class="fw-semibold me-2"> </label>
+                    <button id="searchBtn" class="btn btn-custom-yellow">
+                        검색
+                    </button>
                 </div>
 
             </div>
         </div>
+
+
+        <!-- 본문 -->
+        <div class="px-3 pb-4">
+            <div class="section-box">
+                <div class="row">
+
+                    <!-- 좌측 목록 -->
+                    <div class="col-7">
+                        <table class="table table-hover align-middle" id="storeList">
+                            <thead>
+                            <tr class="text-center">
+                                <th>번호</th>
+                                <th>직영점명</th>
+                                <th>지역</th>
+                                <th>점장명</th>
+                                <th>상태</th>
+                                <th>상세보기</th>
+                            </tr>
+                            </thead>
+                            <tbody id="storeTable"></tbody>
+                        </table>
+
+                        <nav>
+                            <ul class="pagination justify-content-center" id="pagination">
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- 우측 지도 -->
+                    <div class="col-5">
+                        <div id="map" style="width:100%; height:500px;">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
-
 </div>
-
 <!-- 상세 모달 -->
 <div class="modal fade" id="storeDetailModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -161,9 +166,15 @@
 
                 <!-- 버튼 영역 -->
                 <div class="d-flex gap-2 justify-content-end mb-3" id="managerButtons">
-                    <button id="storeStockBtn" class="btn btn-custom-yellow btn-sm" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">재고 조회</button>
-                    <button id="storeMenuBtn" class="btn btn-custom-yellow btn-sm" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">판매 메뉴 조회</button>
-                    <button id="salesBtn" class="btn btn-custom-yellow btn-sm" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">매출 조회</button>
+                    <button id="storeStockBtn" class="btn btn-custom-yellow btn-sm"
+                            sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">재고 조회
+                    </button>
+                    <button id="storeMenuBtn" class="btn btn-custom-yellow btn-sm"
+                            sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">판매 메뉴 조회
+                    </button>
+                    <button id="salesBtn" class="btn btn-custom-yellow btn-sm"
+                            sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">매출 조회
+                    </button>
                 </div>
 
                 <div class="row">
@@ -253,6 +264,7 @@
     </div>
 </div>
 
+
 <script>
     const storeTable = $("#storeList")
 
@@ -262,7 +274,7 @@
         const keyword = $("#searchKeyword").val();
 
         const params = new URLSearchParams();
-        params.append("page", pageNo-1);
+        params.append("page", pageNo - 1);
 
         if (storeStatus !== "all") {
             params.append("storeStatus", storeStatus);
@@ -283,7 +295,7 @@
     const imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
     const imageSize = new kakao.maps.Size(24, 35);
 
-    function loadMap(data){
+    function loadMap(data) {
         var container = document.getElementById('map');
         var options = {
             center: new kakao.maps.LatLng(37.47984, 126.88279),
@@ -301,8 +313,8 @@
 
         data.forEach(store => {
             trimAddress = store.address.split(',');
-            geocoder.addressSearch(trimAddress[0], function(result, status){
-                if(status !== kakao.maps.services.Status.OK){
+            geocoder.addressSearch(trimAddress[0], function (result, status) {
+                if (status !== kakao.maps.services.Status.OK) {
                     console.log('주소 변환 실패' + store.address)
                     return;
                 }
@@ -328,7 +340,7 @@
                     infowindow.close();
                 });
 
-                kakao.maps.event.addListener(marker, 'click', function() {
+                kakao.maps.event.addListener(marker, 'click', function () {
                     fetchUtil(`getStoreDetail/${store.storeNo}`, data => {
                         openStoreDetail(data);
                     })
@@ -336,7 +348,6 @@
             });
         });
     }
-
 
 
     function renderStoreList(data) {
@@ -365,6 +376,7 @@
             tbody.append(row);
         })
     }
+
     $(window).on("load", function () {
         loadPage(1);
     });
@@ -391,17 +403,18 @@
 
 
     let currentStore = null;
+
     function openStoreDetail(store) {
         currentStore = store;
-        $("#mdStoreName").text(store.storeName?? "-");
-        $("#mdStatus").text(store.storeStatus?? "-");
-        $("#mdManagerName").text(store.managerName?? "-");
-        $("#mdManagerPhoneNumber").text(store.phoneNumber?? "-");
-        $("#mdAddress").text(store.address?? "-");
-        $("#mdStorePhone").text(store.storePhoneNumber?? "-");
-        $("#mdOpenDate").text(store.openedDate?? "-");
-        $("#mdTime").text(store.openTime + " ~ " + store.closeTime?? "-");
-        $("#mdCloseDate").text(store.closedDate?? "-");
+        $("#mdStoreName").text(store.storeName ?? "-");
+        $("#mdStatus").text(store.storeStatus ?? "-");
+        $("#mdManagerName").text(store.managerName ?? "-");
+        $("#mdManagerPhoneNumber").text(store.phoneNumber ?? "-");
+        $("#mdAddress").text(store.address ?? "-");
+        $("#mdStorePhone").text(store.storePhoneNumber ?? "-");
+        $("#mdOpenDate").text(store.openedDate ?? "-");
+        $("#mdTime").text(store.openTime + " ~ " + store.closeTime ?? "-");
+        $("#mdCloseDate").text(store.closedDate ?? "-");
         $("#mdStoreImg").attr("src", store.storeImage);
 
         new bootstrap.Modal(document.getElementById("storeDetailModal")).show();
